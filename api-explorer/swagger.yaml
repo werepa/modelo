@@ -1,0 +1,54 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Criminalística API
+host: localhost
+basePath: /
+schemes:
+  - http
+  # - https
+consumes:
+  - application/json
+  - multipart/form-data
+produces:
+  - application/json
+
+paths:
+  /laudo/modelo:
+    post:
+      summary: Gera o modelo de laudo
+      tags:
+        - Laudo
+      responses:
+        200:
+          description: O modelo de laudo foi gerado com sucesso!
+          $ref: "#/definitions/Message"
+        401:
+          $ref: "#/responses/AccessDeniedErrorResponse"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+
+
+definitions:
+
+  Erro:
+    required:
+    - message
+    properties:
+      message:
+        type: string
+
+  Message:
+    required:
+    - message
+    properties:
+      message:
+        type: string
+
+responses:
+
+  Standard500ErrorResponse:
+    description: Aconteceu um erro inesperado na API.
+
+  AccessDeniedErrorResponse:
+    description: API Bearer Authorization ausente ou incorreta!
