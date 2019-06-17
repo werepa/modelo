@@ -48,26 +48,67 @@ $d->nome_signatario = 'Weber Rener Paiva';
 $d->matricula_signatario = '9780';
 $d->numero_procedimento = '6548';
 
-$d->caracteristicas = array(
-    array('label'=> 'Chassi', 'texto'=>'4556HJ34534JK67' , 'obs'=>'Nenhum indício de adulteração'),
-    array('label'=> 'Motor', 'texto'=>'2345678' , 'obs'=>'O terceiro algarismo da numeração está com tipagem diferente'),
-    array('label'=> 'Placas', 'texto'=>'DYF-1587' , 'obs'=>'Lacre íntegro')
-); 
+$d->quesitos = array(
+    array('numero' => '1', 'quesito' => 'Quais as características do veículo?', 'alias' => 'caracteristicas', 'resposta' => 'Trata-se de um [onshow.v.veiculo_descricao]. Detalhes apresentados na seção III e nas figuras do Apêndice A.'),
+    array('numero' => '2', 'quesito' => 'O veículo submetido a exame possui sinais de adulteração do chassi, motor ou câmbio?', 'alias' => 'adulteração', 'resposta' => '[onshow.v.adulteracao_resposta]'),
+    array('numero' => '3', 'quesito' => 'Qual o estado de conservação e o valor comercial do veículo?', 'alias' => 'conservação', 'resposta' => 'O veículo encontrava-se em estado de conservação [onshow.v.veiculo_conservacao] e, considerando as observações constantes na seção III, o veículo foi avaliado em aproximadamente [onshow.v.veiculo_avaliacao] ([onshow.v.veiculo_avaliacao_extenso]).'),
+    array('numero' => '4', 'quesito' => 'O veículo possui algum compartimento adredemente preparado para o transporte de drogas e etc.?', 'alias' => 'local adrede', 'resposta' => '[onshow.v.local_adrede_resposta]'),
+    array('numero' => '5', 'quesito' => 'Outros dados julgados úteis.', 'alias' => 'outros dados', 'resposta' => '[onshow.v.outros_resposta]'),
+);
 
 $v = new stdClass();
+$v->caracteristicas = array(
+    array('label'=> 'Marca/Modelo', 'texto'=>'Honda Fit'),
+    array('label'=> 'Ano/Modelo', 'texto'=>'2006/2007'),
+    array('label'=> 'Cor', 'texto'=>'dourada'),
+    array('label'=> 'Demo', 'texto'=>'Bom pa karai!'),
+); 
+
+$v->identificacao = array(
+    array('label'=> 'Chassi', 'texto'=>'4556HJ34534JK67' , 'obs'=>'Nenhum indício de adulteração'),
+    array('label'=> 'Motor', 'texto'=>'2345678' , 'obs'=>'O terceiro algarismo da numeração está com tipagem diferente'),
+    array('label'=> 'Placas', 'texto'=>'DYF-1587 (Goiânia-GO)' , 'obs'=>'Lacre íntegro'),
+    array('label'=> 'RENAVAM', 'texto'=>'00917716671' , 'obs'=>''),
+); 
+
+$v->adicional = array(
+    array('label'=> 'Estado de conservação', 'texto' => 'Ruim'),
+    array('label'=> 'Características gerais', 'texto'=>'vidros elétricos nas portas dianteiras e traseiras, película nos vidros: dianteiro esquerdo, dianteiro direito, traseiro esquerdo, traseiro direito, traseiro'),
+    array('label'=> 'Avarias', 'texto' => 'Amassado na porta traseira direita'),
+    array('label'=> 'Valor comercial', 'texto' => 'R$ 21.500,00 (vinte e um mil quinhentos reais), referente a um veículo semelhante em bom estado de conservação'),
+); 
+
+
 $v->veiculo_descricao = 'um veículo (passeio) Honda/Fit, placas JGV-6348, ano 2006/2007, cor dourada';
 $v->adulteracao_resposta = 'Não foram encontrados sinais de adulteração de motor, chassi ou câmbio.';
 $v->veiculo_avaliacao = 'R$ 21.500,00';
 $v->veiculo_avaliacao_extenso = 'vinte e um mil quinhentos reais';
 $v->veiculo_conservacao = 'ruim';
 
-
+$v->imagens = array(
+    array('fig1' => array('filename' => 'frente_1.png'), 'fig2' => array('filename' => 'lateral_esquerda_1.png')),
+    array('fig1' => array('filename' => 'lateral_direita_1.png'), 'fig2' => array('filename' => 'traseira_1.png')),
+    array('fig1' => array('filename' => 'interior_1.png'), 'fig2' => array('filename' => 'interior_2.png')),
+    array('fig1' => array('filename' => 'chassi_1.png'), 'fig2' => array('filename' => 'motor_1.png')),
+);
+              
+$v->dupla = array(
+    array('filename' => 'chassi_1.png'),
+);
+              
 $TBS = new clsTinyButStrong;
 $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
 
 $TBS->LoadTemplate('Modelo laudo veiculo.odt',OPENTBS_ALREADY_UTF8);
 
-$TBS->MergeBlock('c', $d->caracteristicas); // características do veículo
+$TBS->MergeBlock('quesitos', $d->quesitos); // quesitos
+
+$TBS->MergeBlock('caracteristica', $v->caracteristicas); // características do veículo
+$TBS->MergeBlock('identificacao', $v->identificacao); // identificacao do veículo
+$TBS->MergeBlock('adicional', $v->adicional); // informações adicionais do veículo
+
+$TBS->MergeBlock('img', $v->imagens); // imagens do veículo
+$TBS->MergeBlock('img2', $v->dupla); // imagens do veículo
 
 $TBS->Show(OPENTBS_DOWNLOAD, 'laudo.odt');
 
